@@ -1,0 +1,9 @@
+Hiredis==3.0.0
+django-redis==5.4.0
+Django==5.1.2
+Pillow==11.0.0
+Djangorestframework==3.15.2
+psycopg2==2.9.10 #PostgreSQL database adapter for Python
+django-cors-headers==4.6.0
+djangorestframework-simplejwt==5.3.1
+django-filter==24.3
