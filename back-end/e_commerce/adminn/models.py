@@ -43,7 +43,7 @@ class Users(AbstractBaseUser):
         db_table = 'users'
 
 
-class ProfilePicure(models.Model):
+class ProfilePicture(models.Model):
     user = models.OneToOneField(
         Users, on_delete=models.CASCADE, related_name='user')
     profile_picture = models.ImageField(upload_to='profile_picture')
