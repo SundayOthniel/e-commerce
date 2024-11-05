@@ -10,14 +10,13 @@ from rest_framework import permissions
 from django.shortcuts import get_object_or_404
 
 @api_view(http_method_names=['GET'])
-def index(request, pk=None, format=None):
-    item = get_object_or_404(Cars, pk=pk)
+def index(request, format=None):
     return Response({
         'create_user': reverse('create_user', request=request, format=format),
         'create_item': reverse('create_item', request=request, format=format),
         'user_dashboard': reverse('user_dashboard', request=request, format=format),
         'login': reverse('login', request=request, format=format),
-        'detailed_view': reverse('detailed_view', kwargs={'pk': item.pk}, request=request, format=format),
+        'change_password': reverse('change_password', request=request, format=format),
     })
     
 class CreateItem(CreateAPIView):
