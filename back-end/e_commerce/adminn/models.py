@@ -29,7 +29,7 @@ class Users(AbstractBaseUser):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     is_superuser = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField()
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateField(auto_now=True)
@@ -52,25 +52,24 @@ class ProfilePicture(models.Model):
         db_table = 'profile_picture'
 
 
-class Cars(models.Model):
+class Car(models.Model):
     fuel_type = models.CharField(max_length=20)
     condition = models.CharField(max_length=5)
     transmission = models.CharField(max_length=20)
-    # description = models.TextField()
-    # category = models.CharField(max_length=20)
-    # brand = models.CharField(max_length=20)
-    # avalability = models.CharField(max_length=5)
-    # model = models.CharField(max_length=20)
-    # price =  models.PositiveIntegerField()
-    publish_date = models.DateField(auto_now_add=True)
-
+    description = models.TextField()
+    category = models.CharField(max_length=20)
+    brand = models.CharField(max_length=20)
+    available  = models.BooleanField(default=True)
+    model = models.CharField(max_length=20)
+    price =  models.PositiveIntegerField()
+    publish_date = models.DateTimeField(auto_now_add=True)
     class Meta:
-        ordering = ['publish_date']
-        db_table = 'cars'
+        ordering = ['-publish_date']
+        db_table = 'Cars'
 
 
 class CarImage(models.Model):
-    car = models.ForeignKey(Cars, related_name='images',
+    car = models.ForeignKey(Car, related_name='images',
                             on_delete=models.CASCADE)
     image = models.ImageField(upload_to='car_images/')
 

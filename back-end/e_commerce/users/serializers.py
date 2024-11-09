@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from adminn.models import Cars, Users
+from adminn.models import Car, CarImage, Users
 from .utility import default_profile_image
 
 
@@ -41,11 +41,16 @@ class CreateUserSerializer(serializers.ModelSerializer):
         return user
 
 
-class UserDashboardSerializer(serializers.ModelSerializer):
+class CarImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Cars
-        fields = '__all__'
-
+        model = CarImage
+        fields = ["image"]
+        
+class AllCarSerializer(serializers.ModelSerializer):
+    images = CarImageSerializer(many=True)
+    class Meta:
+        model = Car
+        exclude = ["publish_date", "id"]
 
 class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(write_only=True)
@@ -72,6 +77,7 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
             instance.last_name = validated_data.get('last_name', instance.last_name)
             instance.save()
             return instance
+        
 class ChangePasswordSerializer(serializers.ModelSerializer):
     old_password = serializers.CharField(write_only=True)
     new_password = serializers.CharField(write_only=True)

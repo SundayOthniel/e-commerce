@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
-from .serializers import ChangePasswordSerializer, CreateUserSerializer, LoginSerializer, UpdateProfileSerializer, UserDashboardSerializer
-from adminn.models import Cars, Users
+from .serializers import ChangePasswordSerializer, CreateUserSerializer, LoginSerializer, UpdateProfileSerializer, AllCarSerializer
+from adminn.models import Car, Users
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
 from rest_framework import permissions
@@ -39,10 +39,8 @@ class Login(APIView):
             if user:
                 request.session["user"] = user.id
                 refresh_token, access_token = token(user)
-                response = Response({
-                    'refresh': str(refresh_token),
-                    'access': str(access_token),
-                }, status=status.HTTP_200_OK)
+                response = Response({"access":str(access_token),
+                                     "refresh":str(refresh_token)},status=status.HTTP_200_OK)
 
                 response.set_cookie(
                     key='refresh_token',
@@ -64,46 +62,46 @@ class Login(APIView):
             else:
                 return Response(
                     {"error": "Invalid email or password"},
-                    status=status.HTTP_401_UNAUTHORIZED
+                    status=status.HTTP_400_BAD_REQUEST #Add to doc
                 )
         else:
             return Response(seralize_details.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Can be accessed by User
-class UserDashboard(ListAPIView):
-    queryset = Cars.objects.all()
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    serializer_class = UserDashboardSerializer
+class AllCar(ListAPIView):
+    queryset = Car.objects.all()
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = AllCarSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ('fuel_type', 'condition', 'transmission')
+    filterset_fields = ('condition', 'brand', 'model', 'category', 'available')
 
-    def get(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        cache_key = f"user_dashboard_{request.GET.urlencode()}"
+        cache_key = f"all_cars_{request.GET.urlencode()}"
         cache_data = cache.get(cache_key)
         
-        if cache_data:
+        if queryset:
+            queryset_serializer = self.get_serializer(queryset, many=True)
+            data = queryset_serializer.data
+            cache.set(cache_key, data, timeout=60 * 60)
+            return Response(data, status=status.HTTP_200_OK)
+        elif cache_data:
             return Response(cache_data, status=status.HTTP_200_OK)
-        if not queryset.exists():
+        else:
             return Response(
-                {"MatchError": "No match found"},
+                {"Error": "Not available..."},
                 status=status.HTTP_404_NOT_FOUND
             )
-        else:
-            serializer = self.get_serializer(queryset, many=True)
-            data = serializer.data
-            cache.set(cache_key, data, timeout=60 * 60)  # Cache for 1 hour
-            return Response(data, status=status.HTTP_200_OK)
+            
+        
 
 # Can be accessed by User
-
-
 class DetailedView(RetrieveAPIView):
     # permission_classes = [JWTAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'pk'
-    serializer_class = UserDashboardSerializer
-    queryset = Cars.objects.all()
+    serializer_class = AllCarSerializer
+    queryset = Car.objects.all()
 
 # Can be accessed by anyone
 

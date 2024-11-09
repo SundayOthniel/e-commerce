@@ -1,6 +1,6 @@
 from django.conf import settings
 from adminn.models import ProfilePicture
-from rest_framework.status import status
+from rest_framework import status
 import os
 from django.core.files import File
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -38,5 +38,4 @@ class CustomTokenRefreshSlidingView(TokenRefreshView):
                 secure=True,
                 samesite='Lax'
             )
-        else:
-            return response
+        return response

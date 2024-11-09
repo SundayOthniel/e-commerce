@@ -1,12 +1,12 @@
 from django.urls import path
-from .views import ChangePassword, Login, UdateProfile, UserDashboard, CreateUser, DetailedView
+from .views import ChangePassword, Login, UdateProfile, AllCar, CreateUser, DetailedView
 from .utility import CustomTokenRefreshSlidingView
 
 
 
 urlpatterns = [
     path('create_user', CreateUser.as_view(), name='create_user'),
-    path('user_dashboard', UserDashboard.as_view(), name='user_dashboard'),
+    path('all_cars', AllCar.as_view(), name='all_cars'),
     path('login', Login.as_view(), name='login'),
     path('access_token', CustomTokenRefreshSlidingView.as_view(), name='access_token'),
     path('detailed_view/<int:pk>', DetailedView.as_view(), name='detsiled_view'),
