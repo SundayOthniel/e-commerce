@@ -19,7 +19,7 @@ def index(request, format=None):
     
 class CreateItem(CreateAPIView):
     serializer_class = CreateItemSerializer
-    # authentication_classes = [JWTAuthentication]
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAdminUser, permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -30,4 +30,4 @@ class CreateItem(CreateAPIView):
             cache.delete(cache_key)
             return Response(serialized_data.data, status=status.HTTP_201_CREATED)
         else:
-            return Response({"Erroe":"Invalid"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serialized_data.errors, status=status.HTTP_400_BAD_REQUEST)

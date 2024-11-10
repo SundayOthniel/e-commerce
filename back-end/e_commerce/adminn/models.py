@@ -21,7 +21,7 @@ class UsersManager(BaseUserManager):
             raise ValueError('is_active must have is_active=True.')
         else:
             return self.create_user(
-                email=email, password=password, **extra_fields)
+                email=email, password=password, **extra_fields.capitalize())
 
 
 class Users(AbstractBaseUser):
@@ -29,7 +29,7 @@ class Users(AbstractBaseUser):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     is_superuser = models.BooleanField(default=False)
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateField(auto_now=True)
@@ -60,7 +60,7 @@ class Car(models.Model):
     category = models.CharField(max_length=20)
     brand = models.CharField(max_length=20)
     available  = models.BooleanField(default=True)
-    model = models.CharField(max_length=20)
+    car_model = models.CharField(max_length=20)
     price =  models.PositiveIntegerField()
     publish_date = models.DateTimeField(auto_now_add=True)
     class Meta:
@@ -75,3 +75,9 @@ class CarImage(models.Model):
 
     class Meta:
         db_table = 'car_image'
+
+class CarThumbnail(models.Model):
+    car = models.OneToOneField(Car, on_delete=models.CASCADE, related_name='thumbnail')
+    image = models.ImageField(upload_to='car_thumbnail')
+    class Meta:
+        db_table = 'car_thumbnail'

@@ -8,25 +8,35 @@ from rest_framework import permissions
 # from rest_framework import authentication
 from django.contrib.auth import authenticate
 from rest_framework import status
-# from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash
 from django_filters import rest_framework as filters
 from .utility import token
 from django.core.cache import cache
-
+from rest_framework.renderers import JSONRenderer
+from rest_framework.exceptions import ValidationError
 
 # Can be accessed by anyone
 class CreateUser(ListCreateAPIView):
     serializer_class = CreateUserSerializer
     permission_classes = [permissions.AllowAny]
     
-    
+    def post(self, request, *args, **kwargs):
+        try:
+            serialized_data = self.get_serializer(data=request.data)
+            serialized_data.is_valid(raise_exception=True)
+            serialized_data.save()
+            return Response(serialized_data.data, status=status.HTTP_201_CREATED)
+        except ValidationError:
+            return Response({"detail": "A user with this email already exists."}, status=status.HTTP_400_BAD_REQUEST)
+
+
 # Can be accessed by anyone
+# Done
 class Login(APIView):
+    renderer_classes = [JSONRenderer]
     serializer_class = LoginSerializer
     permission_classes = [permissions.AllowAny]
-    authentication_classes = [JWTAuthentication]
-
-    def post(self, request):
+    def post(self, request, format=None):
         try:
             details = request.data
         except Exception as e:
@@ -37,10 +47,8 @@ class Login(APIView):
             password = seralize_details.validated_data.get('password')
             user = authenticate(request, email=email, password=password)
             if user:
-                request.session["user"] = user.id
                 refresh_token, access_token = token(user)
-                response = Response({"access":str(access_token),
-                                     "refresh":str(refresh_token)},status=status.HTTP_200_OK)
+                response = Response({"detail":"Successfully login"},status=status.HTTP_200_OK)
 
                 response.set_cookie(
                     key='refresh_token',
@@ -61,25 +69,39 @@ class Login(APIView):
                 return response
             else:
                 return Response(
-                    {"error": "Invalid email or password"},
-                    status=status.HTTP_400_BAD_REQUEST #Add to doc
+                    {"detail": "Invalid email or password"},
+                    status=status.HTTP_400_BAD_REQUEST
                 )
         else:
             return Response(seralize_details.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# Can be accessed by User
+
+# Can be accessed by anyone
+
+class ProductFilter(filters.FilterSet):
+    min_price = filters.NumberFilter(field_name="price", lookup_expr='gte')
+    max_price = filters.NumberFilter(field_name="price", lookup_expr='lte')
+    condition = filters.CharFilter(field_name="condition", lookup_expr='iexact')
+    brand = filters.CharFilter(field_name="brand", lookup_expr='iexact')
+    car_model = filters.CharFilter(field_name="car_model", lookup_expr='iexact')
+    category = filters.CharFilter(field_name="category", lookup_expr='iexact')
+    available = filters.BooleanFilter(field_name="available", lookup_expr='iexact')
+    class Meta:
+        model = Car
+        fields = ['condition', 'brand', 'car_model', 'category', 'available']
+        
 class AllCar(ListAPIView):
+    permission_classes = [permissions.AllowAny]
     queryset = Car.objects.all()
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = AllCarSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ('condition', 'brand', 'model', 'category', 'available')
+    filterset_class  = ProductFilter
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         cache_key = f"all_cars_{request.GET.urlencode()}"
         cache_data = cache.get(cache_key)
-        
+
         if queryset:
             queryset_serializer = self.get_serializer(queryset, many=True)
             data = queryset_serializer.data
@@ -89,50 +111,61 @@ class AllCar(ListAPIView):
             return Response(cache_data, status=status.HTTP_200_OK)
         else:
             return Response(
-                {"Error": "Not available..."},
+                {"detail": "Not available..."},
                 status=status.HTTP_404_NOT_FOUND
             )
-            
         
-
-# Can be accessed by User
+# Can be accessed by Users or admin
 class DetailedView(RetrieveAPIView):
-    # permission_classes = [JWTAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authention_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'pk'
     serializer_class = AllCarSerializer
     queryset = Car.objects.all()
 
-# Can be accessed by anyone
+    def get(self, request, *args, **kwargs):
+        cache_key = f"car_detail_{kwargs[self.lookup_field]}"
+        cache_data = cache.get(cache_key)
+        if cache_data:
+            return Response(cache_data, status=status.HTTP_200_OK)
+        else:
+            car_detail = self.get_object()
+            car_detail_serializer = self.get_serializer(car_detail)
+            car_data = car_detail_serializer.data
+            cache.set(cache_key, car_data, timeout=60 * 60)
+            return Response(car_data, status=status.HTTP_200_OK)
 
-
+# Can be accessed by either admin or users
 class UdateProfile(UpdateAPIView):
     lookup_field = 'pk'
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = UpdateProfileSerializer
     queryset = Users.objects.all()
 
-    def post(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
+        return self.handle_update(request, *args, **kwargs)
+    
+    def put(self, request, *args, **kwargs):
+        return self.handle_update(request, *args, **kwargs)
+    
+    def handle_update(self, request, *args, **kwargs):
         user = request.user
         if user.pk != kwargs.get(self.lookup_field):
-            return Response({"PermissionError": "You are trying to change another user\'s details"})
+            return Response({"detail": "You are trying to change another user\'s details"})
         else:
             return super().update(request, *args, **kwargs)
 
-# Can be accessed by anyone
-
-
+# Can be accessed by either admin or users
 class ChangePassword(APIView):
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         serializer = ChangePasswordSerializer(
             data=request.data, context={'request': request})
         if serializer.is_valid():
-            # update_session_auth_hash(request, request.user)
-            return Response({"success": "Password changed successfully."}, status=status.HTTP_200_OK)
+            update_session_auth_hash(request, request.user)
+            return Response({"detail": "Password changed successfully."}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
