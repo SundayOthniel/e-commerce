@@ -15,6 +15,7 @@ def index(request, format=None):
         'all_cars': reverse('all_cars', request=request, format=format),
         'login': reverse('login', request=request, format=format),
         'change_password': reverse('change_password', request=request, format=format),
+        'refresh_token': reverse('refresh_token', request=request, format=format),
     })
     
 class CreateItem(CreateAPIView):

@@ -1,3 +1,4 @@
+from rest_framework.reverse import reverse
 from rest_framework import serializers
 from adminn.models import Car, CarImage, CarThumbnail, Users
 from .utility import default_profile_image
@@ -6,6 +7,7 @@ from .utility import default_profile_image
 class CreateUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+
     class Meta:
         model = Users
         fields = [
@@ -17,7 +19,8 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
     def validate_email(self, email_value):
         if Users.objects.filter(email=email_value).exists():
-            raise serializers.ValidationError("A user with this email already exists.")
+            raise serializers.ValidationError(
+                "A user with this email already exists.")
         else:
             return email_value
 
@@ -29,28 +32,49 @@ class CreateUserSerializer(serializers.ModelSerializer):
             password=validated_data.get('password'),
         )
         default_profile_image(user=user)
-        return user 
-    
+        return user
+
     def to_representation(self, instance):
-        return {"detail": "User created successfully."} 
+        return {"detail": "User created successfully."}
+
+
+class CarThumbnailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CarThumbnail
+        fields = ["image"]
+
+
+class AllCarSerializer(serializers.ModelSerializer):
+    thumbnail = CarThumbnailSerializer(read_only=True)
+    # car_detail = serializers.HyperlinkedIdentityField(
+    #     view_name='users:detailed_view', lookup_field='pk')
+
+    class Meta:
+        model = Car
+        exclude = ["publish_date"]
 
 
 class CarImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CarThumbnail
+        model = CarImage
         fields = ["image"]
-        
-class AllCarSerializer(serializers.ModelSerializer):
-    thumbnail = CarImageSerializer(read_only=True)
+
+
+class CarsDetailsSerializer(serializers.ModelSerializer):
+    images = CarImageSerializer(many=True, read_only=True)
+    # all_cars = serializers.SerializerMethodField()
+
     class Meta:
         model = Car
-        exclude = ["publish_date", "id"]
+        exclude = ["publish_date"]
+    # def get_all_cars(self, obj):
+    #     request = self.context.get('request')
+    #     return reverse('users:all_cars', request=request)
 
 
 class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(write_only=True)
     password = serializers.CharField(write_only=True)
-
     class Meta:
         model = Users
         fields = ['email', 'password']

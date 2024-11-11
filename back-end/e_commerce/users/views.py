@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
-from .serializers import ChangePasswordSerializer, CreateUserSerializer, LoginSerializer, UpdateProfileSerializer, AllCarSerializer
+from .serializers import CarsDetailsSerializer, ChangePasswordSerializer, CreateUserSerializer, LoginSerializer, UpdateProfileSerializer, AllCarSerializer
 from adminn.models import Car, Users
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
@@ -8,7 +8,6 @@ from rest_framework import permissions
 # from rest_framework import authentication
 from django.contrib.auth import authenticate
 from rest_framework import status
-from django.contrib.auth import update_session_auth_hash
 from django_filters import rest_framework as filters
 from .utility import token
 from django.core.cache import cache
@@ -28,7 +27,6 @@ class CreateUser(ListCreateAPIView):
             return Response(serialized_data.data, status=status.HTTP_201_CREATED)
         except ValidationError:
             return Response({"detail": "A user with this email already exists."}, status=status.HTTP_400_BAD_REQUEST)
-
 
 # Can be accessed by anyone
 # Done
@@ -120,7 +118,7 @@ class DetailedView(RetrieveAPIView):
     authention_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'pk'
-    serializer_class = AllCarSerializer
+    serializer_class = CarsDetailsSerializer
     queryset = Car.objects.all()
 
     def get(self, request, *args, **kwargs):
@@ -165,7 +163,7 @@ class ChangePassword(APIView):
         serializer = ChangePasswordSerializer(
             data=request.data, context={'request': request})
         if serializer.is_valid():
-            update_session_auth_hash(request, request.user)
+            # update_session_auth_hash(request, request.user)
             return Response({"detail": "Password changed successfully."}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

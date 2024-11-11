@@ -8,5 +8,5 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     path('', index, name='index'),
     path('create_item', CreateItem.as_view(), name='create_item'),
-    path('refresh_token', TokenRefreshView.as_view(), name='token_refresh'),
-] 
+    path('refresh_token', TokenRefreshView.as_view(), name='refresh_token'),
+]
