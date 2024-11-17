@@ -10,3 +10,4 @@ django-redis==5.4.0
 redis==5.2.0 #Redis python binding
 Hiredis==3.0.0 #Use to enhance psrsing
 #django-cacheops==7.1 (not yet used)
+gunicorn==23.0.0

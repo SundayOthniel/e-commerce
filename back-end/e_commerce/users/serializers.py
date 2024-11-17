@@ -1,6 +1,6 @@
 from rest_framework.reverse import reverse
 from rest_framework import serializers
-from adminn.models import Car, CarImage, CarThumbnail, Users
+from adminn.models import Cars, CarImage, CarThumbnail, Users
 from .utility import default_profile_image
 
 
@@ -50,7 +50,7 @@ class AllCarSerializer(serializers.ModelSerializer):
     #     view_name='users:detailed_view', lookup_field='pk')
 
     class Meta:
-        model = Car
+        model = Cars
         exclude = ["publish_date"]
 
 
@@ -65,7 +65,7 @@ class CarsDetailsSerializer(serializers.ModelSerializer):
     # all_cars = serializers.SerializerMethodField()
 
     class Meta:
-        model = Car
+        model = Cars
         exclude = ["publish_date"]
     # def get_all_cars(self, obj):
     #     request = self.context.get('request')

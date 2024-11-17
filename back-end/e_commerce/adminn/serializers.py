@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CarImage, Car, CarThumbnail
+from .models import CarImage, Cars, CarThumbnail
 
 class CreateItemSerializer(serializers.ModelSerializer):
     images = serializers.ListField(
@@ -8,7 +8,7 @@ class CreateItemSerializer(serializers.ModelSerializer):
     )
     available = serializers.CharField(default=True)
     class Meta:
-        model = Car
+        model = Cars
         exclude = ['publish_date']
     def create(self, validated_data):
         images = validated_data.pop('images')
@@ -20,7 +20,7 @@ class CreateItemSerializer(serializers.ModelSerializer):
         brand = validated_data.get('brand').capitalize()
         car_model = validated_data.get("car_model").capitalize()
         price =  validated_data.get("price")
-        car = Car.objects.create(
+        car = Cars.objects.create(
             fuel_type=fuel_type, 
             condition=condition, 
             transmission=transmission,

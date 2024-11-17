@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,13 +22,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@8ziv-kp7xbkb@^xcj7f9*am#(yx26=!2+l5i_7%02(q=!)_-@'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-ALLOWED_HOSTS = []
+# DEBUG = env('DEBUG')
+DEBUG = env('DEBUG')
+SECRET_KEY = env('SECRET_KEY')
+
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000"
 ]
@@ -73,25 +80,15 @@ WSGI_APPLICATION = 'e_commerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "e_commerce",
-#         "USER": "postgres",
-#         "PASSWORD": "root",
-#         "HOST": "127.0.0.1",
-#         "PORT": "5432",
-#     },
-# }
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "e_commerce",
-        "USER": "root",
-        "PASSWORD": "root",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
+        "ENGINE": env('DB_ENGINE'),
+        "NAME": env('DB_NAME'),
+        "USER": env('DB_USER'),
+        "PASSWORD": env('DB_PASSWORD'),
+        "HOST": env('DB_HOST'),
+        "PORT": env('DB_PORT'),
     }
 }
 
@@ -105,6 +102,13 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT')
+CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE')
+SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS')
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS')
+SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD')
+SECURE_PROXY_SSL_HEADER = tuple(env('SECURE_PROXY_SSL_HEADER').split(','))
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -153,39 +157,36 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
+        "BACKEND": env('REDIS_BACKEND'),
+        "LOCATION": env('REDIS_LOCATION'),
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "PARSER_CLASS": "redis.connection._HiredisParser",
+            "CLIENT_CLASS": env('REDIS_CLIENT_CLASS'),
+            "PARSER_CLASS": env('REDIS_PARSER_CLASS'),
         }
     }
 }
 
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = "default"
 
 PASSWORD_HASHERS = [
-    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    env('PASSWORD_HASHERS'),
 ]
 
 AUTH_USER_MODEL = 'adminn.users'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        env('DEFAULT_AUTHENTICATION_CLASSES'),
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
 }
 
-from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1440),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'AUTH_COOKIE': 'jwt-refresh',
-    'AUTH_COOKIE_HTTP_ONLY': True,  
-    'AUTH_COOKIE_SECURE': True, 
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(env('ACCESS_TOKEN_LIFETIME'))),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=int(env('REFRESH_TOKEN_LIFETIME'))),
+    'AUTH_COOKIE': env('AUTH_COOKIE'),
+    'AUTH_COOKIE_HTTP_ONLY': env.bool('AUTH_COOKIE_HTTP_ONLY'),  
+    'AUTH_COOKIE_SECURE': env.bool('AUTH_COOKIE_SECURE'), 
 }

@@ -52,7 +52,7 @@ class ProfilePicture(models.Model):
         db_table = 'profile_picture'
 
 
-class Car(models.Model):
+class Cars(models.Model):
     fuel_type = models.CharField(max_length=20)
     condition = models.CharField(max_length=5)
     transmission = models.CharField(max_length=20)
@@ -69,7 +69,7 @@ class Car(models.Model):
 
 
 class CarImage(models.Model):
-    car = models.ForeignKey(Car, related_name='images',
+    car = models.ForeignKey(Cars, related_name='images',
                             on_delete=models.CASCADE)
     image = models.ImageField(upload_to='car_images/')
 
@@ -77,7 +77,7 @@ class CarImage(models.Model):
         db_table = 'car_image'
 
 class CarThumbnail(models.Model):
-    car = models.OneToOneField(Car, on_delete=models.CASCADE, related_name='thumbnail')
+    car = models.OneToOneField(Cars, on_delete=models.CASCADE, related_name='thumbnail')
     image = models.ImageField(upload_to='car_thumbnail')
     class Meta:
         db_table = 'car_thumbnail'

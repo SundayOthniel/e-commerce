@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
 from .serializers import CarsDetailsSerializer, ChangePasswordSerializer, CreateUserSerializer, LoginSerializer, UpdateProfileSerializer, AllCarSerializer
-from adminn.models import Car, Users
+from adminn.models import Cars, Users
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
 from rest_framework import permissions
@@ -84,20 +84,21 @@ class ProductFilter(filters.FilterSet):
     car_model = filters.CharFilter(field_name="car_model", lookup_expr='iexact')
     category = filters.CharFilter(field_name="category", lookup_expr='iexact')
     available = filters.BooleanFilter(field_name="available", lookup_expr='iexact')
+    fuel_type = filters.CharFilter(field_name="fuel_type", lookup_expr='iexact')
     class Meta:
-        model = Car
-        fields = ['condition', 'brand', 'car_model', 'category', 'available']
+        model = Cars
+        fields = ['condition', 'brand', 'car_model', 'category', 'available', 'fuel_type']
         
 class AllCar(ListAPIView):
     permission_classes = [permissions.AllowAny]
-    queryset = Car.objects.all()
+    queryset = Cars.objects.all()
     serializer_class = AllCarSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class  = ProductFilter
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        cache_key = f"all_cars_{request.GET.urlencode()}"
+        cache_key = f"cars_{request.GET.urlencode()}"
         cache_data = cache.get(cache_key)
 
         if queryset:
@@ -119,7 +120,7 @@ class DetailedView(RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'pk'
     serializer_class = CarsDetailsSerializer
-    queryset = Car.objects.all()
+    queryset = Cars.objects.all()
 
     def get(self, request, *args, **kwargs):
         cache_key = f"car_detail_{kwargs[self.lookup_field]}"
