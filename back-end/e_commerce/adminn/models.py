@@ -59,7 +59,7 @@ class Cars(models.Model):
     description = models.TextField()
     category = models.CharField(max_length=20)
     brand = models.CharField(max_length=20)
-    available  = models.BooleanField(default=True)
+    available  = models.CharField(max_length=3, default='Yes')
     car_model = models.CharField(max_length=20)
     price =  models.PositiveIntegerField()
     publish_date = models.DateTimeField(auto_now_add=True)

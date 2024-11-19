@@ -85,6 +85,7 @@ class ProductFilter(filters.FilterSet):
     category = filters.CharFilter(field_name="category", lookup_expr='iexact')
     available = filters.BooleanFilter(field_name="available", lookup_expr='iexact')
     fuel_type = filters.CharFilter(field_name="fuel_type", lookup_expr='iexact')
+
     class Meta:
         model = Cars
         fields = ['condition', 'brand', 'car_model', 'category', 'available', 'fuel_type']
@@ -96,18 +97,21 @@ class AllCar(ListAPIView):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class  = ProductFilter
 
-    def list(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         cache_key = f"cars_{request.GET.urlencode()}"
         cache_data = cache.get(cache_key)
-
+        print(f"Cache key: {cache_key}")
+        
+        if cache_data:
+            return Response(cache_data, status=status.HTTP_200_OK)
         if queryset:
             queryset_serializer = self.get_serializer(queryset, many=True)
             data = queryset_serializer.data
             cache.set(cache_key, data, timeout=60 * 60)
+            print(f"Cached: {cache_key}")
             return Response(data, status=status.HTTP_200_OK)
-        elif cache_data:
-            return Response(cache_data, status=status.HTTP_200_OK)
+            
         else:
             return Response(
                 {"detail": "Not available..."},
@@ -125,6 +129,7 @@ class DetailedView(RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         cache_key = f"car_detail_{kwargs[self.lookup_field]}"
         cache_data = cache.get(cache_key)
+        
         if cache_data:
             return Response(cache_data, status=status.HTTP_200_OK)
         else:

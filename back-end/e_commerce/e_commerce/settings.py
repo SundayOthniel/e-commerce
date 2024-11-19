@@ -81,24 +81,25 @@ WSGI_APPLICATION = 'e_commerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": env('DB_ENGINE'),
-#         "NAME": env('DB_NAME', default='e_commerce'),
-#         "USER": env('DB_USER', default='root'),
-#         "PASSWORD": env('DB_PASSWORD', default='root'),
-#         "HOST": env('DB_HOST', default='127.0.0.1'),
-#         "PORT": env('DB_PORT', default='3306'),
-#     }
-# }
-
+#FOR DEVELOPMENT
 DATABASES = {
-    "default": dj_database_url.config(
-        default='postgresql://root:whFRZ93Yep7mPjY20r6nrdVUvyrPY9Nc@dpg-cst2q1a3esus739s3t30-a.frankfurt-postgres.render.com/e_commerce_7gh4',
-        conn_max_age=600
-    )
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "e_commerce",
+        "USER": "root",
+        "PASSWORD": "root",
+        "HOST": "127.0.0.1",
+        "PORT": "3306",
+    }
 }
+
+#FOR DEPLOYMENT
+# DATABASES = {
+#     "default": dj_database_url.config(
+#         default=env('DB_DEFAULT'),
+#         conn_max_age=600
+#     )
+# }
 
 
 
@@ -114,6 +115,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+
+#FOR DEPLOYMENT
 # SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT')
 # CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE')
 # SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS')
@@ -165,16 +168,31 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-redis_url = env('REDIS_URL')
+# redis_url = env('REDIS_URL')
 
+
+#FOR DEPLOYMENT
+# CACHES = {
+#     "default": {
+#         "BACKEND": env('REDIS_BACKEND'),
+#         "LOCATION": env('REDIS_URL'),
+#         "OPTIONS": {
+#             "CLIENT_CLASS": env('REDIS_CLIENT_CLASS'),
+#             "PARSER_CLASS": env('REDIS_PARSER_CLASS'),
+#             'SSL': True 
+#         }
+#     }
+# }
+
+
+#FOR DEVELOPMENT
 CACHES = {
     "default": {
-        "BACKEND": env('REDIS_BACKEND'),
-        "LOCATION": env('REDIS_URL'),
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
         "OPTIONS": {
-            "CLIENT_CLASS": env('REDIS_CLIENT_CLASS'),
-            "PARSER_CLASS": env('REDIS_PARSER_CLASS'),
-            'SSL': True 
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            # "PARSER_CLASS": "redis.connection._HiredisParser"
         }
     }
 }
