@@ -33,7 +33,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 DEBUG = env('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+ALLOWED_HOSTS = ["e-commerce-a1oa.onrender.com"]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000"
 ]
