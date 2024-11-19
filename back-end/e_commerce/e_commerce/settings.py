@@ -33,9 +33,27 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 DEBUG = env('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
 
-ALLOWED_HOSTS = ["e-commerce-a1oa.onrender.com",'127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    "e-commerce-a1oa.onrender.com",
+    '127.0.0.1', 'localhost'
+]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000"
+]
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "DELETE",
+    "OPTIONS",
+]
+CORS_ALLOW_CREDENTIALS = True 
+
+CORS_ALLOW_HEADERS = [
+    "Authorization",
+    "Content-Type",
+    "X-CSRFToken",
 ]
 
 # Application definition
@@ -133,6 +151,7 @@ CSP_FONT_SRC = ["'self'", "https://fonts.gstatic.com"]
 CSP_CONNECT_SRC = ["'self'", "https://api.example.com"]
 CSP_OBJECT_SRC = ["'none'"]  # Block all object embeds
 CSP_FRAME_ANCESTORS = ["'none'"]  # Prevent clickjacking
+
 
 
 # Password validation
