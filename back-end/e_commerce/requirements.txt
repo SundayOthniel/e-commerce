@@ -12,3 +12,4 @@ Hiredis==3.0.0 #Use to enhance psrsing
 #django-cacheops==7.1 (not yet used)
 gunicorn==23.0.0
 whitenoise==6.8.2
+django-environ==0.11.2
