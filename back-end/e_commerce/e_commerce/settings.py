@@ -82,24 +82,24 @@ WSGI_APPLICATION = 'e_commerce.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 #FOR DEVELOPMENT
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "e_commerce",
-        "USER": "root",
-        "PASSWORD": "root",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": "e_commerce",
+#         "USER": "root",
+#         "PASSWORD": "root",
+#         "HOST": "127.0.0.1",
+#         "PORT": "3306",
+#     }
+# }
 
 #FOR DEPLOYMENT
-# DATABASES = {
-#     "default": dj_database_url.config(
-#         default=env('DB_DEFAULT'),
-#         conn_max_age=600
-#     )
-# }
+DATABASES = {
+    "default": dj_database_url.config(
+        default=env('DB_DEFAULT'),
+        conn_max_age=600
+    )
+}
 
 
 
@@ -117,12 +117,12 @@ MIDDLEWARE = [
 
 
 #FOR DEPLOYMENT
-# SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT')
-# CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE')
-# SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS')
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS')
-# SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD')
-# SECURE_PROXY_SSL_HEADER = tuple(env('SECURE_PROXY_SSL_HEADER').split(','))
+SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT')
+CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE')
+SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS')
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS')
+SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD')
+SECURE_PROXY_SSL_HEADER = tuple(env('SECURE_PROXY_SSL_HEADER').split(','))
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -168,34 +168,33 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# redis_url = env('REDIS_URL')
 
 
 #FOR DEPLOYMENT
-# CACHES = {
-#     "default": {
-#         "BACKEND": env('REDIS_BACKEND'),
-#         "LOCATION": env('REDIS_URL'),
-#         "OPTIONS": {
-#             "CLIENT_CLASS": env('REDIS_CLIENT_CLASS'),
-#             "PARSER_CLASS": env('REDIS_PARSER_CLASS'),
-#             'SSL': True 
-#         }
-#     }
-# }
-
-
-#FOR DEVELOPMENT
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
+        "BACKEND": env('REDIS_BACKEND'),
+        "LOCATION": env('REDIS_URL'),
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            # "PARSER_CLASS": "redis.connection._HiredisParser"
+            "CLIENT_CLASS": env('REDIS_CLIENT_CLASS'),
+            "PARSER_CLASS": env('REDIS_PARSER_CLASS'),
+            'SSL': True 
         }
     }
 }
+
+
+#FOR DEVELOPMENT
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             # "PARSER_CLASS": "redis.connection._HiredisParser"
+#         }
+#     }
+# }
 
 
 PASSWORD_HASHERS = [
