@@ -1,5 +1,5 @@
 from rest_framework.response import Response
-from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
 from .serializers import CarsDetailsSerializer, ChangePasswordSerializer, CreateUserSerializer, LoginSerializer, UpdateProfileSerializer, AllCarSerializer
 from adminn.models import Cars, Users
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -15,7 +15,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.exceptions import ValidationError
 
 # Can be accessed by anyone
-class CreateUser(ListCreateAPIView):
+class CreateUser(CreateAPIView):
     serializer_class = CreateUserSerializer
     permission_classes = [permissions.AllowAny]
     

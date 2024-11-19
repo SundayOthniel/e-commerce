@@ -14,7 +14,7 @@ from pathlib import Path
 import environ
 import os
 from datetime import timedelta
-from urllib.parse import urlparse
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,7 +33,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 DEBUG = env('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
 
-ALLOWED_HOSTS = ["e-commerce-a1oa.onrender.com"]
+ALLOWED_HOSTS = ["e-commerce-a1oa.onrender.com",'127.0.0.1', 'localhost']
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000"
 ]
@@ -82,16 +82,25 @@ WSGI_APPLICATION = 'e_commerce.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": env('DB_ENGINE'),
+#         "NAME": env('DB_NAME', default='e_commerce'),
+#         "USER": env('DB_USER', default='root'),
+#         "PASSWORD": env('DB_PASSWORD', default='root'),
+#         "HOST": env('DB_HOST', default='127.0.0.1'),
+#         "PORT": env('DB_PORT', default='3306'),
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": env('DB_ENGINE'),
-        "NAME": env('DB_NAME'),
-        "USER": env('DB_USER'),
-        "PASSWORD": env('DB_PASSWORD'),
-        "HOST": env('DB_HOST'),
-        "PORT": env('DB_PORT'),
-    }
+    "default": dj_database_url.config(
+        default='postgresql://root:whFRZ93Yep7mPjY20r6nrdVUvyrPY9Nc@dpg-cst2q1a3esus739s3t30-a.frankfurt-postgres.render.com/e_commerce_7gh4',
+        conn_max_age=600
+    )
 }
+
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -105,12 +114,12 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT')
-CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE')
-SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS')
-SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS')
-SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD')
-SECURE_PROXY_SSL_HEADER = tuple(env('SECURE_PROXY_SSL_HEADER').split(','))
+# SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT')
+# CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE')
+# SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS')
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS')
+# SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD')
+# SECURE_PROXY_SSL_HEADER = tuple(env('SECURE_PROXY_SSL_HEADER').split(','))
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
