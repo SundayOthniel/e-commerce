@@ -101,24 +101,24 @@ WSGI_APPLICATION = 'e_commerce.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 #FOR DEVELOPMENT
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "e_commerce",
-        "USER": "root",
-        "PASSWORD": "root",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": "e_commerce",
+#         "USER": "root",
+#         "PASSWORD": "root",
+#         "HOST": "127.0.0.1",
+#         "PORT": "3306",
+#     }
+# }
 
 #FOR DEPLOYMENT
-# DATABASES = {
-#     "default": dj_database_url.config(
-#         default=env('DB_DEFAULT'),
-#         conn_max_age=600
-#     )
-# }
+DATABASES = {
+    "default": dj_database_url.config(
+        default=env('DB_DEFAULT'),
+        conn_max_age=600
+    )
+}
 
 
 
