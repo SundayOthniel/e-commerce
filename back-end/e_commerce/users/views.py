@@ -9,10 +9,14 @@ from rest_framework import permissions
 from django.contrib.auth import authenticate
 from rest_framework import status
 from django_filters import rest_framework as filters
-from .utility import token
+from .utility import get_client_ip, token
 from django.core.cache import cache
 from rest_framework.renderers import JSONRenderer
 from rest_framework.exceptions import ValidationError
+from rest_framework.throttling import AnonRateThrottle
+import logging
+logger = logging.getLogger(__name__)
+
 
 # Can be accessed by anyone
 class CreateUser(CreateAPIView):
@@ -34,20 +38,22 @@ class Login(APIView):
     renderer_classes = [JSONRenderer]
     serializer_class = LoginSerializer
     permission_classes = [permissions.AllowAny]
+    throttle_classes = [AnonRateThrottle]
+    
     def post(self, request, format=None):
         try:
             details = request.data
         except Exception as e:
-            return Response({"Error": f"{e} occoured"})
+            return Response({"detail": f"{e} occoured"})
         seralize_details = self.serializer_class(data=details)
         if seralize_details.is_valid(raise_exception=True):
             email = seralize_details.validated_data.get('email')
             password = seralize_details.validated_data.get('password')
             user = authenticate(request, email=email, password=password)
             if user:
+                logger.info(f'{user.first_name.capitalize()} just made a successfull login')
                 refresh_token, access_token = token(user)
                 response = Response({"detail":"Successfully login"},status=status.HTTP_200_OK)
-
                 response.set_cookie(
                     key='refresh_token',
                     value=str(refresh_token),
@@ -66,6 +72,8 @@ class Login(APIView):
 
                 return response
             else:
+                ip = get_client_ip(request)
+                logger.warning(f'{request.user} with ip({ip}) failed to login due to bad credentials...')
                 return Response(
                     {"detail": "Invalid email or password"},
                     status=status.HTTP_400_BAD_REQUEST
@@ -101,7 +109,6 @@ class AllCar(ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         cache_key = f"cars_{request.GET.urlencode()}"
         cache_data = cache.get(cache_key)
-        print(f"Cache key: {cache_key}")
         
         if cache_data:
             return Response(cache_data, status=status.HTTP_200_OK)

@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 class UsersManager(BaseUserManager):
     def create_user(self, email, password=None, **extrafields):
-        email = self.normalize_email(email)
+        # email = self.normalize_email(email)
         user = self.model(email=email, password=password, **extrafields)
         user.set_password(password)
         user.save(using=self._db)
@@ -14,6 +14,9 @@ class UsersManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_active', True)
+        email = email.capitalize()
+        extra_fields['first_name'] = extra_fields['first_name'].capitalize()
+        extra_fields['last_name'] = extra_fields['last_name'].capitalize()
 
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
@@ -21,7 +24,7 @@ class UsersManager(BaseUserManager):
             raise ValueError('is_active must have is_active=True.')
         else:
             return self.create_user(
-                email=email, password=password, **extra_fields.capitalize())
+                email=email, password=password, **extra_fields)
 
 
 class Users(AbstractBaseUser):
@@ -41,6 +44,11 @@ class Users(AbstractBaseUser):
 
     class Meta:
         db_table = 'users'
+    def has_perm(self, perm, obj=None):
+        return self.is_superuser
+
+    def has_module_perms(self, app_label):
+        return self.is_superuser
 
 
 class ProfilePicture(models.Model):
@@ -53,15 +61,21 @@ class ProfilePicture(models.Model):
 
 
 class Cars(models.Model):
-    fuel_type = models.CharField(max_length=20)
-    condition = models.CharField(max_length=5)
-    transmission = models.CharField(max_length=20)
-    description = models.TextField()
-    category = models.CharField(max_length=20)
-    brand = models.CharField(max_length=20)
+    fuel_type = models.CharField(max_length=20, null=True)
+    condition = models.CharField(max_length=5, null=True)
+    millage = models.PositiveIntegerField(null=True)
+    transmission = models.CharField(max_length=20, null=True)
+    first_registration = models.CharField(max_length=255, default="Not registered")
+    engine_power = models.CharField(max_length=20, null=True)
+    description = models.TextField(null=True)
+    interior_material = models.CharField(max_length=255, null=True)
+    chases_id = models.PositiveIntegerField(null=True)
+    category = models.CharField(max_length=20, null=True)
+    brand = models.CharField(max_length=20, null=True)
     available  = models.CharField(max_length=3, default='Yes')
-    car_model = models.CharField(max_length=20)
-    price =  models.PositiveIntegerField()
+    car_model = models.CharField(max_length=20, null=True)
+    price =  models.PositiveIntegerField(null=True)
+    drive_type = models.PositiveIntegerField(null=True)
     publish_date = models.DateTimeField(auto_now_add=True)
     class Meta:
         ordering = ['-publish_date']

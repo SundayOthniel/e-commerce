@@ -16,6 +16,7 @@ import os
 from datetime import timedelta
 import dj_database_url
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,7 +30,7 @@ env = environ.Env(
 )
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-# DEBUG = env('DEBUG')
+DEBUG = env('DEBUG')
 DEBUG = env('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
 
@@ -71,7 +72,7 @@ INSTALLED_APPS = [
     'adminn.apps.AdminnConfig',
     'rest_framework',
     'rest_framework_simplejwt',
-    'django_filters'
+    'django_filters',
 ]
 
 
@@ -100,24 +101,24 @@ WSGI_APPLICATION = 'e_commerce.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 #FOR DEVELOPMENT
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME": "e_commerce",
-#         "USER": "root",
-#         "PASSWORD": "root",
-#         "HOST": "127.0.0.1",
-#         "PORT": "3306",
-#     }
-# }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "e_commerce",
+        "USER": "root",
+        "PASSWORD": "root",
+        "HOST": "127.0.0.1",
+        "PORT": "3306",
+    }
+}
 
 #FOR DEPLOYMENT
-DATABASES = {
-    "default": dj_database_url.config(
-        default=env('DB_DEFAULT'),
-        conn_max_age=600
-    )
-}
+# DATABASES = {
+#     "default": dj_database_url.config(
+#         default=env('DB_DEFAULT'),
+#         conn_max_age=600
+#     )
+# }
 
 
 
@@ -133,6 +134,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
 
 
 #FOR DEPLOYMENT
@@ -144,14 +150,13 @@ SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD')
 SECURE_PROXY_SSL_HEADER = tuple(env('SECURE_PROXY_SSL_HEADER').split(','))
 
 CSP_DEFAULT_SRC = ["'self'"]
-CSP_SCRIPT_SRC = ["'self'", "https://trusted-scripts.example.com"]
-CSP_STYLE_SRC = ["'self'", "https://trusted-styles.example.com"]
-CSP_IMG_SRC = ["'self'", "https://trusted-images.example.com"]
-CSP_FONT_SRC = ["'self'", "https://fonts.gstatic.com"]
-CSP_CONNECT_SRC = ["'self'", "https://api.example.com"]
-CSP_OBJECT_SRC = ["'none'"]  # Block all object embeds
-CSP_FRAME_ANCESTORS = ["'none'"]  # Prevent clickjacking
-
+CSP_SCRIPT_SRC = ["'self'", "http://localhost:3000"]
+CSP_STYLE_SRC = ["'self'"]
+CSP_IMG_SRC = ["'self'"]
+CSP_FONT_SRC = ["'self'"]
+CSP_CONNECT_SRC = ["'self'"]
+CSP_OBJECT_SRC = ["'none'"] 
+CSP_FRAME_ANCESTORS = ["'none'"] 
 
 
 # Password validation
@@ -172,7 +177,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -183,7 +187,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -221,9 +224,17 @@ CACHES = {
 #         "LOCATION": "redis://127.0.0.1:6379",
 #         "OPTIONS": {
 #             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#             # "PARSER_CLASS": "redis.connection._HiredisParser"
+#             "PARSER_CLASS": "redis.connection._HiredisParser"
 #         }
-#     }
+    # }
+# }
+
+
+
+# STORAGES = {
+#     "staticfiles": {
+#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#     },
 # }
 
 
@@ -231,7 +242,7 @@ PASSWORD_HASHERS = [
     env('PASSWORD_HASHERS'),
 ]
 
-AUTH_USER_MODEL = 'adminn.users'
+AUTH_USER_MODEL = env('AUTH_USER_MODEL')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -240,6 +251,12 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '5/20m',
+    }
 }
 
 
@@ -249,4 +266,33 @@ SIMPLE_JWT = {
     'AUTH_COOKIE': env('AUTH_COOKIE'),
     'AUTH_COOKIE_HTTP_ONLY': env.bool('AUTH_COOKIE_HTTP_ONLY'),  
     'AUTH_COOKIE_SECURE': env.bool('AUTH_COOKIE_SECURE'), 
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    "formatters": {
+        "simple": {
+            "format": "{levelname} {asctime} {message}",
+            "style": "{",
+            "datefmt": "%Y-%m-%d %H:%M:%S"
+        } 
+    },
+    'handlers':{
+        'console':{
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+            'level': 'DEBUG',
+        } 
+    },
+    'loggers':{
+        'django':{
+            'handlers':['console'],
+            'propagate':False
+        }
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
 }
