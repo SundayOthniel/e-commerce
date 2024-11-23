@@ -115,7 +115,7 @@ WSGI_APPLICATION = 'e_commerce.wsgi.application'
 #FOR DEPLOYMENT
 DATABASES = {
     "default": dj_database_url.config(
-        default=env('DB_DEFAULT'),
+        default="postgresql://root:OE3p4qkbQAFy5EZPmUYhkGa89BZq0e1Z@dpg-ct0t4o3tq21c73eip840-a.frankfurt-postgres.render.com/e_commerce_09al",
         conn_max_age=600
     )
 }
