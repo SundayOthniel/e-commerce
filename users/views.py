@@ -11,7 +11,9 @@ from django_filters import rest_framework as filters
 from admin.utility import get_client_ip, token
 from django.core.cache import cache
 from rest_framework.renderers import JSONRenderer
-from rest_framework.exceptions import AnonRateThrottle
+# from rest_framework.exceptions import AnonRateThrottle
+from rest_framework.throttling import AnonRateThrottle
+
 import logging
 logger = logging.getLogger(__name__)
 
