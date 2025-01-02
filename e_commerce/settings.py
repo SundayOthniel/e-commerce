@@ -28,7 +28,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 DEBUG = False
 SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = [
-    "e-commerce-j3in.onrender.com",
+    "e-commerce-nep7.onrender.com",
     '127.0.0.1', 
     'localhost'
 ]
