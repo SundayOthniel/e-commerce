@@ -171,36 +171,36 @@ STORAGES = {
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #FOR DEPLOYMENT
-# SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT')
-# CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE')
-# SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS')
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS')
-# SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD')
-# SECURE_PROXY_SSL_HEADER = tuple(env('SECURE_PROXY_SSL_HEADER').split(','))
-# SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT')
+CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE')
+SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS')
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS')
+SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD')
+SECURE_PROXY_SSL_HEADER = tuple(env('SECURE_PROXY_SSL_HEADER').split(','))
+SESSION_COOKIE_SECURE = True
 
-# CSP_DEFAULT_SRC = ["'self'"]
-# CSP_SCRIPT_SRC = ["'self'", "http://localhost:3000"]
-# CSP_STYLE_SRC = ["'self'"]
-# CSP_IMG_SRC = ["'self'"]
-# CSP_FONT_SRC = ["'self'"]
-# CSP_CONNECT_SRC = ["'self'"]
-# CSP_OBJECT_SRC = ["'none'"] 
-# CSP_FRAME_ANCESTORS = ["'none'"] 
+CSP_DEFAULT_SRC = ["'self'"]
+CSP_SCRIPT_SRC = ["'self'", "http://localhost:3000"]
+CSP_STYLE_SRC = ["'self'"]
+CSP_IMG_SRC = ["'self'"]
+CSP_FONT_SRC = ["'self'"]
+CSP_CONNECT_SRC = ["'self'"]
+CSP_OBJECT_SRC = ["'none'"] 
+CSP_FRAME_ANCESTORS = ["'none'"] 
 
 
 #FOR DEPLOYMENT
-# CACHES = {
-#     "default": {
-#         "BACKEND": env('REDIS_BACKEND'),
-#         "LOCATION": env('REDIS_URL'),
-#         "OPTIONS": {
-#             "CLIENT_CLASS": env('REDIS_CLIENT_CLASS'),
-#             "PARSER_CLASS": env('REDIS_PARSER_CLASS'),
-#             'SSL': True 
-#         }
-#     }
-# }
+CACHES = {
+    "default": {
+        "BACKEND": env('REDIS_BACKEND'),
+        "LOCATION": env('REDIS_URL'),
+        "OPTIONS": {
+            "CLIENT_CLASS": env('REDIS_CLIENT_CLASS'),
+            "PARSER_CLASS": env('REDIS_PARSER_CLASS'),
+            'SSL': True 
+        }
+    }
+}
 
 
 PASSWORD_HASHERS = [
@@ -274,13 +274,13 @@ LOGGING = {
 #     }
 # }
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "PARSER_CLASS": "redis.connection._HiredisParser"
-        }
-    }
-}
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             "PARSER_CLASS": "redis.connection._HiredisParser"
+#         }
+#     }
+# }
