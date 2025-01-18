@@ -106,12 +106,29 @@ WSGI_APPLICATION = 'e_commerce.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 # FOR DEPLOYMENT
+# DATABASES = {
+#     "default": dj_database_url.config(
+#         default=env('DATABASE_URL'),
+#         conn_max_age=600
+#     )
+# }
+
 DATABASES = {
-    "default": dj_database_url.config(
-        default=env('DB_DEFAULT'),
-        conn_max_age=600
-    )
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env('NAME'),
+        "USER": env('USER'),
+        "PASSWORD": env('PASSWORD'),
+        "HOST": env('HOST'),
+        "PORT": env('PORT'),
+    }
 }
+
+# user= 
+# password=
+# host=
+# port=
+# dbname=
 
 
 # Password validation
