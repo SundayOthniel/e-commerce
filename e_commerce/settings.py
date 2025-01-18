@@ -108,7 +108,7 @@ WSGI_APPLICATION = 'e_commerce.wsgi.application'
 # FOR DEPLOYMENT
 DATABASES = {
     "default": dj_database_url.config(
-        default=env('DATABASE_URL'),
+        default=env('DB_DEFAULT'),
         conn_max_age=600
     )
 }
