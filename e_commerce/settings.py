@@ -273,25 +273,3 @@ LOGGING = {
 
 
 
-#FOR DEVELOPMENT
-# DATABASES = {
-#     "default": {
-#         c
-#         "NAME": "e_commerce",
-#         "USER": "root",
-#         "PASSWORD": "root",
-#         "HOST": "127.0.0.1",
-#         "PORT": "3306",
-#     }
-# }
-
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379",
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#             "PARSER_CLASS": "redis.connection._HiredisParser"
-#         }
-#     }
-# }
