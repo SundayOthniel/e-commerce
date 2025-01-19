@@ -200,17 +200,17 @@ CSP_FRAME_ANCESTORS = ["'none'"]
 
 
 #FOR DEPLOYMENT
-CACHES = {
-    "default": {
-        "BACKEND": env('REDIS_BACKEND'),
-        "LOCATION": env('REDIS_URL'),
-        "OPTIONS": {
-            "CLIENT_CLASS": env('REDIS_CLIENT_CLASS'),
-            "PARSER_CLASS": env('REDIS_PARSER_CLASS'),
-            'SSL': True 
-        }
-    }
-}
+# CACHES = {
+#     "default": {
+#         "BACKEND": env('REDIS_BACKEND'),
+#         "LOCATION": env('REDIS_URL'),
+#         "OPTIONS": {
+#             "CLIENT_CLASS": env('REDIS_CLIENT_CLASS'),
+#             "PARSER_CLASS": env('REDIS_PARSER_CLASS'),
+#             'SSL': True 
+#         }
+#     }
+# }
 
 
 PASSWORD_HASHERS = [
