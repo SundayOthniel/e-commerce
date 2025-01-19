@@ -27,7 +27,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 DEBUG = env.bool('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = [
-    "e-commerce-lxgh.onrender.com",
+    "e-commerce-ogej.onrender.com",
     '127.0.0.1', 
     'localhost'
 ]
