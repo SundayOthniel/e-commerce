@@ -4,7 +4,8 @@ from .models import CarImage, Cars, CarThumbnail
 class CreateItemSerializer(serializers.ModelSerializer):
     images = serializers.ListField(
         child=serializers.ImageField(),
-        write_only=True
+        write_only=True,
+        max_length=5
     )
     
     class Meta:
