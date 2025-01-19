@@ -80,7 +80,7 @@ class Cars(models.Model):
     publish_date = models.DateTimeField(auto_now_add=True)
     class Meta:
         ordering = ['-publish_date']
-        db_table = 'Cars'
+        db_table = 'cars'
 
 
 class CarImage(models.Model):

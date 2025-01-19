@@ -14,7 +14,6 @@ from pathlib import Path
 import environ
 import os
 from datetime import timedelta
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-DEBUG = False
+DEBUG = env.bool('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = [
     "e-commerce-lxgh.onrender.com",
@@ -43,6 +42,7 @@ CORS_ALLOW_METHODS = [
     "DELETE",
     "OPTIONS",
 ]
+
 CORS_ALLOW_CREDENTIALS = True 
 
 CORS_ALLOW_HEADERS = [
@@ -50,7 +50,6 @@ CORS_ALLOW_HEADERS = [
     "Content-Type",
     "X-CSRFToken",
 ]
-
 
 INSTALLED_APPS = [
     # "daphne",
@@ -66,6 +65,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -107,22 +108,15 @@ WSGI_APPLICATION = 'e_commerce.wsgi.application'
 
 # FOR DEPLOYMENT
 DATABASES = {
-    "default": dj_database_url.config(
-        default=env('DB_DEFAULT'),
-        conn_max_age=600
-    )
+    "default": {
+        "ENGINE": env('ENGINE'),
+        "NAME": env('NAME'),
+        "USER": env('USER'),
+        "PASSWORD": env('PASSWORD'),
+        "HOST": env('HOST'),
+        "PORT": env('PORT'),
+    }
 }
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": env('NAME'),
-#         "USER": env('USER'),
-#         "PASSWORD": env('PASSWORD'),
-#         "HOST": env('HOST'),
-#         "PORT": env('PORT'),
-#     }
-# }
 
 
 # Password validation
@@ -163,7 +157,12 @@ STATIC_URL = 'static/'
 STATIC_ROOT  = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = 'media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')\
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CLOUDINARY_URL = env('CLOUDINARY_URL')
+CLOUDINARY_STORAGE = {
+    'SECURE': True,
+}
 
 STORAGES = {
     "default": {
@@ -173,6 +172,7 @@ STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
+    "DEFAULT_FILE_STORAGE": "cloudinary_storage.storage.MediaCloudinaryStorage",
 }
 
 
@@ -276,7 +276,7 @@ LOGGING = {
 #FOR DEVELOPMENT
 # DATABASES = {
 #     "default": {
-#         "ENGINE": "django.db.backends.mysql",
+#         c
 #         "NAME": "e_commerce",
 #         "USER": "root",
 #         "PASSWORD": "root",

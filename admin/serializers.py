@@ -27,6 +27,7 @@ class CreateItemSerializer(serializers.ModelSerializer):
         car_model = validated_data.get("car_model").capitalize()
         drive_type = validated_data.get("drive_type")
         price =  validated_data.get("price")
+        
         car = Cars.objects.create(
             fuel_type=fuel_type, 
             condition=condition, 
@@ -43,6 +44,7 @@ class CreateItemSerializer(serializers.ModelSerializer):
             brand=brand,
             millage=millage
         )
+        
         CarThumbnail.objects.create(car=car, image=images[0])
         for image in images:
             CarImage.objects.create(car=car, image=image)
