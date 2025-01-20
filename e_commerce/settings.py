@@ -27,7 +27,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 DEBUG = env.bool('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = [
-    "financial-adria-othnielorg-a8037322.koyeb.app",
+    "distinguished-traci-othnielorg-a3d62a49.koyeb.app",
     '127.0.0.1', 
     'localhost'
 ]
