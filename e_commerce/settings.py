@@ -14,6 +14,7 @@ from pathlib import Path
 import environ
 import os
 from datetime import timedelta
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -104,16 +105,25 @@ WSGI_APPLICATION = 'e_commerce.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 # FOR DEPLOYMENT
+# DATABASES = {
+#     "default": {
+#         "ENGINE": env('ENGINE'),
+#         "NAME": env('NAME'),
+#         "USER": env('USER'),
+#         "PASSWORD": env('PASSWORD'),
+#         "HOST": env('HOST'),
+#         "PORT": env('PORT'),
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": env('ENGINE'),
-        "NAME": env('NAME'),
-        "USER": env('USER'),
-        "PASSWORD": env('PASSWORD'),
-        "HOST": env('HOST'),
-        "PORT": env('PORT'),
-    }
+    'default': dj_database_url.config(
+        default='postgresql://e_commerce_nujy_user:kS7OaDAOHyyECVqN7baW80mEJ9iPqAGB@dpg-cu5jh956l47c73apaumg-a.frankfurt-postgres.render.com/e_commerce_nujy', 
+        conn_max_age=600,  
+        ssl_require=True 
+    )
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -186,14 +196,14 @@ SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD')
 SECURE_PROXY_SSL_HEADER = tuple(env('SECURE_PROXY_SSL_HEADER').split(','))
 SESSION_COOKIE_SECURE = True
 
-# CSP_DEFAULT_SRC = ["'self'"]
-# CSP_SCRIPT_SRC = ["'self'", "http://localhost:3000"]
-# CSP_STYLE_SRC = ["'self'"]
-# CSP_IMG_SRC = ["'self'"]
-# CSP_FONT_SRC = ["'self'"]
-# CSP_CONNECT_SRC = ["'self'"]
-# CSP_OBJECT_SRC = ["'none'"] 
-# CSP_FRAME_ANCESTORS = ["'none'"] 
+CSP_DEFAULT_SRC = ["'self'"]
+CSP_SCRIPT_SRC = ["'self'", "http://localhost:3000"]
+CSP_STYLE_SRC = ["'self'"]
+CSP_IMG_SRC = ["'self'"]
+CSP_FONT_SRC = ["'self'"]
+CSP_CONNECT_SRC = ["'self'"]
+CSP_OBJECT_SRC = ["'none'"] 
+CSP_FRAME_ANCESTORS = ["'none'"] 
 
 
 #FOR DEPLOYMENT
