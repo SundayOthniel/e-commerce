@@ -62,8 +62,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
-    'cloudinary_storage',
-    'cloudinary',
+    # 'cloudinary_storage',
+    # 'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -155,10 +155,10 @@ STATIC_ROOT  = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-CLOUDINARY_URL = env('CLOUDINARY_URL')
-CLOUDINARY_STORAGE = {
-    'SECURE': True,
-}
+# CLOUDINARY_URL = env('CLOUDINARY_URL')
+# CLOUDINARY_STORAGE = {
+#     'SECURE': True,
+# }
 
 STORAGES = {
     "default": {
@@ -168,7 +168,7 @@ STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
-    "DEFAULT_FILE_STORAGE": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    # "DEFAULT_FILE_STORAGE": "cloudinary_storage.storage.MediaCloudinaryStorage",
 }
 
 
@@ -186,14 +186,14 @@ SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD')
 SECURE_PROXY_SSL_HEADER = tuple(env('SECURE_PROXY_SSL_HEADER').split(','))
 SESSION_COOKIE_SECURE = True
 
-CSP_DEFAULT_SRC = ["'self'"]
-CSP_SCRIPT_SRC = ["'self'", "http://localhost:3000"]
-CSP_STYLE_SRC = ["'self'"]
-CSP_IMG_SRC = ["'self'"]
-CSP_FONT_SRC = ["'self'"]
-CSP_CONNECT_SRC = ["'self'"]
-CSP_OBJECT_SRC = ["'none'"] 
-CSP_FRAME_ANCESTORS = ["'none'"] 
+# CSP_DEFAULT_SRC = ["'self'"]
+# CSP_SCRIPT_SRC = ["'self'", "http://localhost:3000"]
+# CSP_STYLE_SRC = ["'self'"]
+# CSP_IMG_SRC = ["'self'"]
+# CSP_FONT_SRC = ["'self'"]
+# CSP_CONNECT_SRC = ["'self'"]
+# CSP_OBJECT_SRC = ["'none'"] 
+# CSP_FRAME_ANCESTORS = ["'none'"] 
 
 
 #FOR DEPLOYMENT
