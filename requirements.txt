@@ -17,5 +17,5 @@ dj-database-url==2.3.0
 django-csp==3.8
 # channels==4.2.0
 gunicorn==23.0.0
-cloudinary==1.42.1
-django-cloudinary-storage==0.3.0
+# cloudinary==1.42.1
+# django-cloudinary-storage==0.3.0
