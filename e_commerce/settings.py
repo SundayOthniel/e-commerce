@@ -27,7 +27,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 DEBUG = env.bool('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = [
-    "e-commerce-ogej.onrender.com",
+    "financial-adria-othnielorg-a8037322.koyeb.app/",
     '127.0.0.1', 
     'localhost'
 ]
@@ -272,3 +272,25 @@ LOGGING = {
 
 
 
+#FOR DEVELOPMENT
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": "e_commerce",
+#         "USER": "root",
+#         "PASSWORD": "root",
+#         "HOST": "127.0.0.1",
+#         "PORT": "3306",
+#     }
+# }
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             "PARSER_CLASS": "redis.connection._HiredisParser"
+#         }
+#     }
+# }
