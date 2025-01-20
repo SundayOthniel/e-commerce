@@ -63,8 +63,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
-    # 'cloudinary_storage',
-    # 'cloudinary',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -165,10 +165,10 @@ STATIC_ROOT  = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# CLOUDINARY_URL = env('CLOUDINARY_URL')
-# CLOUDINARY_STORAGE = {
-#     'SECURE': True,
-# }
+CLOUDINARY_URL = env('CLOUDINARY_URL')
+CLOUDINARY_STORAGE = {
+    'SECURE': True,
+}
 
 STORAGES = {
     "default": {
