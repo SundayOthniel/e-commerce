@@ -172,13 +172,11 @@ CLOUDINARY_STORAGE = {
 
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-        "LOCATION": MEDIA_ROOT,  
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
-    "DEFAULT_FILE_STORAGE": "cloudinary_storage.storage.MediaCloudinaryStorage",
 }
 
 

@@ -27,7 +27,6 @@ def index(request, format=None):
         'update_profile': reverse('update_profile', kwargs={'pk': car_id}, request=request, format=format) if car_id else None
     })
 
-    
 class CreateItem(CreateAPIView):
     serializer_class = CreateItemSerializer
     authentication_classes = [JWTAuthentication]
