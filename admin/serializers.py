@@ -10,7 +10,7 @@ class CreateItemSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Cars
-        exclude = ['publish_date', 'available']
+        exclude = ['publish_date']
     def create(self, validated_data):
         images = validated_data.pop('images')
         
