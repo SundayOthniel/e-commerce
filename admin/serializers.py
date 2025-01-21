@@ -50,7 +50,7 @@ class CreateItemSerializer(serializers.ModelSerializer):
         
         if images:
             try:
-                thumbnail_upload = image_thumbnail_upload(images[0])
+                thumbnail_upload = image_thumbnail_upload(images)
                 CarThumbnail.objects.create(car=car, image=thumbnail_upload['secure_url'])
                 
                 for image in images:
