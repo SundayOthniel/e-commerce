@@ -1,5 +1,7 @@
-from rest_framework import serializers
 from .models import CarImage, Cars, CarThumbnail
+from .utility import image_thumbnail_upload, car_images
+from cloudinary.exceptions import Error as CloudinaryError
+from rest_framework import serializers
 
 class CreateItemSerializer(serializers.ModelSerializer):
     images = serializers.ListField(
@@ -46,7 +48,15 @@ class CreateItemSerializer(serializers.ModelSerializer):
             # millage=millage
         )
         
-        CarThumbnail.objects.create(car=car, image=images[0])
-        for image in images:
-            CarImage.objects.create(car=car, image=image)
+        if images:
+            try:
+                thumbnail_upload = image_thumbnail_upload(images[0])
+                CarThumbnail.objects.create(car=car, image=thumbnail_upload['secure_url'])
+                
+                for image in images:
+                    image_upload = car_images(image)
+                    CarImage.objects.create(car=car, image=image_upload['secure_url'])
+            except CloudinaryError as e:
+                raise serializers.ValidationError(f"Image upload failed: {str(e)}")
+            
         return car

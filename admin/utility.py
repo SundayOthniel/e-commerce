@@ -1,3 +1,4 @@
+import cloudinary.uploader
 from django.conf import settings
 from rest_framework import status
 import os
@@ -38,6 +39,7 @@ class CustomTokenRefreshSlidingView(TokenRefreshView):
                 samesite='Lax'
             )
         return response
+    
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -45,3 +47,20 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+
+def image_thumbnail_upload(image):
+    thumbnail_upload = cloudinary.uploader.upload(
+        image[0],
+        folder="car_thumbnails",
+        overwrite=True,
+        resource_type="image"
+    )
+    
+def car_images(images):
+    image_upload = cloudinary.uploader.upload(
+        images,
+        folder="car_images",
+        overwrite=True,
+        resource_type="image"
+    )
