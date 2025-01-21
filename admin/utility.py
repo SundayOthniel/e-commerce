@@ -56,6 +56,7 @@ def image_thumbnail_upload(image):
         overwrite=True,
         resource_type="image"
     )
+    return thumbnail_upload
     
 def car_images(images):
     image_upload = cloudinary.uploader.upload(
@@ -64,3 +65,4 @@ def car_images(images):
         overwrite=True,
         resource_type="image"
     )
+    return image_upload
