@@ -86,13 +86,13 @@ class Cars(models.Model):
 class CarImage(models.Model):
     car = models.ForeignKey(Cars, related_name='images',
                             on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='media/car_images/')
+    image = models.CharField()
 
     class Meta:
         db_table = 'car_image'
 
 class CarThumbnail(models.Model):
     car = models.OneToOneField(Cars, on_delete=models.CASCADE, related_name='thumbnail')
-    image = models.ImageField(upload_to='car_thumbnail')
+    image = models.CharField()
     class Meta:
         db_table = 'car_thumbnail'
