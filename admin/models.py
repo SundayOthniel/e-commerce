@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from .utility import default_profile_image 
+from cloudinary.forms import CloudinaryFileField
 
 
 class UsersManager(BaseUserManager):
@@ -86,13 +87,15 @@ class Cars(models.Model):
 class CarImage(models.Model):
     car = models.ForeignKey(Cars, related_name='images',
                             on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='media/car_images/', max_length=500)
+    # image = models.CloudinaryFileField(upload_to='media/car_images/', max_length=500)
+    image = CloudinaryFileField()
 
     class Meta:
         db_table = 'car_image'
 
 class CarThumbnail(models.Model):
     car = models.OneToOneField(Cars, on_delete=models.CASCADE, related_name='thumbnail')
-    image = models.ImageField(upload_to='car_thumbnail', max_length=500)
+    # image = models.CloudinaryFileField(upload_to='car_thumbnail', max_length=500)
+    image = CloudinaryFileField()
     class Meta:
         db_table = 'car_thumbnail'
