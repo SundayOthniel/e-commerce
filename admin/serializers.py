@@ -49,14 +49,14 @@ class CreateItemSerializer(serializers.ModelSerializer):
         )
         
         if images:
-            try:
+            # try:
                 thumbnail_upload = image_thumbnail_upload(images)
                 CarThumbnail.objects.create(car=car, image=thumbnail_upload['secure_url'])
                 
                 for image in images:
                     image_upload = car_images(image)
                     CarImage.objects.create(car=car, image=image_upload['secure_url'])
-            except CloudinaryError as e:
-                raise serializers.ValidationError(f"Image upload failed: {str(e)}")
+            # except CloudinaryError as e:
+            #     raise serializers.ValidationError(f"Image upload failed: {str(e)}")
             
         return car
